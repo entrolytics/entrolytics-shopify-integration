@@ -1,0 +1,36 @@
+# Shopify App Configuration
+# Learn more: https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "Entrolytics"
+client_id = "YOUR_CLIENT_ID"
+application_url = "https://your-app-url.com"
+embedded = true
+
+[access_scopes]
+scopes = "read_themes,write_themes,read_script_tags,write_script_tags,read_orders,read_products"
+
+[auth]
+redirect_urls = [
+  "https://your-app-url.com/auth/callback",
+  "https://your-app-url.com/auth/shopify/callback"
+]
+
+[webhooks]
+api_version = "2024-10"
+
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "/webhooks/customer_deletion"
+  customer_data_request_url = "/webhooks/customer_data_request"
+  shop_deletion_url = "/webhooks/shop_deletion"
+
+[app_proxy]
+url = "https://your-app-url.com/proxy"
+subpath = "entrolytics"
+prefix = "apps"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "your-dev-store.myshopify.com"
