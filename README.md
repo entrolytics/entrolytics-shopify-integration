@@ -105,7 +105,7 @@ Once enabled, the app automatically tracks:
 | Option | Description | Default |
 |--------|-------------|---------|
 | Website ID | Your Entrolytics website ID | Required |
-| Host URL | Entrolytics host (for self-hosted) | `https://ng.entrolytics.click` |
+| Host URL | Entrolytics host (for self-hosted) | `https://entrolytics.click` |
 | Auto-track | Automatically track page views | `true` |
 | Track e-commerce | Track add-to-cart and purchases | `true` |
 | Respect DNT | Honor Do Not Track setting | `false` |

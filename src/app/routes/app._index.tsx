@@ -33,7 +33,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     shop: session.shop,
     config: config || {
       websiteId: '',
-      host: 'https://ng.entrolytics.click',
+      host: 'https://entrolytics.click',
       autoTrack: true,
       trackRevenue: true,
       respectDnt: false,
@@ -135,7 +135,7 @@ export default function Index() {
                 helpText={
                   <>
                     Get your Website ID from your{' '}
-                    <Link url="https://ng.entrolytics.click" target="_blank">
+                    <Link url="https://entrolytics.click" target="_blank">
                       Entrolytics dashboard
                     </Link>
                   </>
@@ -217,8 +217,8 @@ export default function Index() {
               <BlockStack gap="200">
                 <Text as="p" variant="bodyMd">
                   <strong>1.</strong> Create an account at{' '}
-                  <Link url="https://ng.entrolytics.click" target="_blank">
-                    ng.entrolytics.click
+                  <Link url="https://entrolytics.click" target="_blank">
+                    entrolytics.click
                   </Link>
                 </Text>
                 <Text as="p" variant="bodyMd">
