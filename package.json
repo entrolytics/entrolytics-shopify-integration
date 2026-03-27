@@ -1,14 +1,14 @@
 {
   "name": "@entrolytics/shopify-app",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "description": "Shopify app for Entrolytics - First-party growth analytics for the edge",
   "keywords": [
-    "shopify",
-    "shopify-app",
-    "entrolytics",
     "analytics",
-    "ecommerce"
+    "ecommerce",
+    "entrolytics",
+    "shopify",
+    "shopify-app"
   ],
   "license": "MIT",
   "author": "Entrolytics <hey@entrolytics.click>",
@@ -16,34 +16,46 @@
   "scripts": {
     "dev": "shopify app dev",
     "build": "remix vite:build",
-    "lint": "biome check --write .",
-    "typecheck": "tsc --noEmit",
+    "check": "vp check",
+    "lint": "vp lint --fix . && vp fmt --write .",
+    "lint:check": "vp lint . && vp fmt --check .",
+    "lint:fix-unsafe": "vp lint -f stylish --import-plugin --type-aware --type-check --vitest-plugin --fix --fix-suggestions --fix-dangerously src/",
+    "format": "vp fmt --write .",
+    "test": "vp test run",
+    "typecheck": "tsgo --noEmit",
     "deploy": "shopify app deploy",
     "generate": "shopify app generate"
   },
   "dependencies": {
-    "@remix-run/node": "^2.17.2",
-    "@remix-run/react": "^2.17.2",
-    "@shopify/app-bridge-react": "^4.2.8",
+    "@remix-run/node": "^2.17.4",
+    "@remix-run/react": "^2.17.4",
+    "@shopify/app-bridge-react": "^4.2.10",
     "@shopify/polaris": "^13.9.5",
-    "@shopify/shopify-app-remix": "^4.1.0",
-    "@shopify/shopify-app-session-storage-prisma": "^8.0.0",
-    "isbot": "^5.1.32",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "@shopify/shopify-app-remix": "^4.2.0",
+    "@shopify/shopify-app-session-storage-prisma": "^9.0.0",
+    "isbot": "^5.1.36",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.11",
-    "@remix-run/dev": "^2.17.2",
-    "@shopify/cli": "^3.88.1",
-    "@types/react": "^19.2.7",
+    "@remix-run/dev": "^2.17.4",
+    "@shopify/cli": "^3.92.1",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "prisma": "^7.2.0",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.0",
-    "vite-tsconfig-paths": "^6.0.3"
+    "prisma": "^7.6.0",
+    "typescript": "^6.0.2",
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.14",
+    "vite-plus": "latest",
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "engines": {
-    "node": ">=22.x"
+    "node": ">=24.x"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+      "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
+    }
   }
 }

@@ -1,29 +1,29 @@
-import { useState } from 'react';
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useLoaderData, useSubmit, useNavigation } from '@remix-run/react';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData, useNavigation, useSubmit } from "@remix-run/react";
 import {
-  Page,
-  Layout,
-  Card,
-  TextField,
-  Button,
   Banner,
-  Text,
   BlockStack,
-  InlineStack,
-  Checkbox,
-  Link,
   Box,
+  Button,
+  Card,
+  Checkbox,
   Divider,
-} from '@shopify/polaris';
-import { authenticate } from '../../lib/shopify.server';
+  InlineStack,
+  Layout,
+  Link,
+  Page,
+  Text,
+  TextField,
+} from "@shopify/polaris";
+import { useState } from "react";
 import {
   getShopConfig,
-  saveShopConfig,
   installScriptTag,
   removeScriptTag,
-} from '../../lib/entrolytics.server';
+  saveShopConfig,
+} from "../../lib/entrolytics.server";
+import { authenticate } from "../../lib/shopify.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { session } = await authenticate.admin(request);
@@ -32,8 +32,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({
     shop: session.shop,
     config: config || {
-      websiteId: '',
-      host: 'https://entrolytics.click',
+      websiteId: "",
+      host: "https://entrolytics.click",
       autoTrack: true,
       trackRevenue: true,
       respectDnt: false,
@@ -44,19 +44,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
-  const action = formData.get('action');
+  const action = formData.get("action");
 
-  if (action === 'save') {
+  if (action === "save") {
     const config = {
-      websiteId: formData.get('websiteId') as string,
-      host: (formData.get('host') as string) || 'https://entrolytics.click',
-      autoTrack: formData.get('autoTrack') === 'true',
-      trackRevenue: formData.get('trackRevenue') === 'true',
-      respectDnt: formData.get('respectDnt') === 'true',
+      websiteId: formData.get("websiteId") as string,
+      host: (formData.get("host") as string) || "https://entrolytics.click",
+      autoTrack: formData.get("autoTrack") === "true",
+      trackRevenue: formData.get("trackRevenue") === "true",
+      respectDnt: formData.get("respectDnt") === "true",
     };
 
     if (!config.websiteId) {
-      return json({ error: 'Website ID is required' }, { status: 400 });
+      return json({ error: "Website ID is required" }, { status: 400 });
     }
 
     await saveShopConfig(session.shop, config);
@@ -68,48 +68,48 @@ export async function action({ request }: ActionFunctionArgs) {
       return json({ error: result.error }, { status: 400 });
     }
 
-    return json({ success: true, message: 'Analytics enabled successfully!' });
+    return json({ success: true, message: "Analytics enabled successfully!" });
   }
 
-  if (action === 'disable') {
+  if (action === "disable") {
     const config = await getShopConfig(session.shop);
     if (config) {
       await removeScriptTag(admin, config);
     }
 
-    return json({ success: true, message: 'Analytics disabled' });
+    return json({ success: true, message: "Analytics disabled" });
   }
 
-  return json({ error: 'Unknown action' }, { status: 400 });
+  return json({ error: "Unknown action" }, { status: 400 });
 }
 
 export default function Index() {
-  const { shop, config } = useLoaderData<typeof loader>();
+  const { config } = useLoaderData<typeof loader>();
   const submit = useSubmit();
   const navigation = useNavigation();
-  const isLoading = navigation.state === 'submitting';
+  const isLoading = navigation.state === "submitting";
 
   const [websiteId, setWebsiteId] = useState(config.websiteId);
-  const [host, setHost] = useState(config.host);
+  const [host, setHost] = useState(config.host ?? "https://entrolytics.click");
   const [autoTrack, setAutoTrack] = useState(config.autoTrack);
   const [trackRevenue, setTrackRevenue] = useState(config.trackRevenue);
   const [respectDnt, setRespectDnt] = useState(config.respectDnt);
 
   const handleSave = () => {
     const formData = new FormData();
-    formData.set('action', 'save');
-    formData.set('websiteId', websiteId);
-    formData.set('host', host);
-    formData.set('autoTrack', String(autoTrack));
-    formData.set('trackRevenue', String(trackRevenue));
-    formData.set('respectDnt', String(respectDnt));
-    submit(formData, { method: 'post' });
+    formData.set("action", "save");
+    formData.set("websiteId", websiteId);
+    formData.set("host", host || "https://entrolytics.click");
+    formData.set("autoTrack", String(autoTrack));
+    formData.set("trackRevenue", String(trackRevenue));
+    formData.set("respectDnt", String(respectDnt));
+    submit(formData, { method: "post" });
   };
 
   const handleDisable = () => {
     const formData = new FormData();
-    formData.set('action', 'disable');
-    submit(formData, { method: 'post' });
+    formData.set("action", "disable");
+    submit(formData, { method: "post" });
   };
 
   return (
@@ -134,7 +134,7 @@ export default function Index() {
                 autoComplete="off"
                 helpText={
                   <>
-                    Get your Website ID from your{' '}
+                    Get your Website ID from your{" "}
                     <Link url="https://entrolytics.click" target="_blank">
                       Entrolytics dashboard
                     </Link>
@@ -189,7 +189,7 @@ export default function Index() {
                   loading={isLoading}
                   disabled={!websiteId}
                 >
-                  {config.websiteId ? 'Update Settings' : 'Enable Analytics'}
+                  {config.websiteId ? "Update Settings" : "Enable Analytics"}
                 </Button>
 
                 {config.websiteId && (
@@ -216,7 +216,7 @@ export default function Index() {
 
               <BlockStack gap="200">
                 <Text as="p" variant="bodyMd">
-                  <strong>1.</strong> Create an account at{' '}
+                  <strong>1.</strong> Create an account at{" "}
                   <Link url="https://entrolytics.click" target="_blank">
                     entrolytics.click
                   </Link>
@@ -264,8 +264,8 @@ export default function Index() {
 
                 <Banner tone="info">
                   <Text as="p" variant="bodyMd">
-                    We're privacy-focused: no cookies required, GDPR compliant,
-                    and all data is anonymized.
+                    We're privacy-focused: no cookies required, GDPR compliant, and all data is
+                    anonymized.
                   </Text>
                 </Banner>
               </BlockStack>

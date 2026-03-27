@@ -12,16 +12,16 @@ scopes = "read_themes,write_themes,read_script_tags,write_script_tags,read_order
 [auth]
 redirect_urls = [
   "https://your-app-url.com/auth/callback",
-  "https://your-app-url.com/auth/shopify/callback"
+  "https://your-app-url.com/auth/shopify/callback",
 ]
 
 [webhooks]
 api_version = "2024-10"
 
-  [webhooks.privacy_compliance]
-  customer_deletion_url = "/webhooks/customer_deletion"
-  customer_data_request_url = "/webhooks/customer_data_request"
-  shop_deletion_url = "/webhooks/shop_deletion"
+[webhooks.privacy_compliance]
+customer_deletion_url = "/webhooks/customer_deletion"
+customer_data_request_url = "/webhooks/customer_data_request"
+shop_deletion_url = "/webhooks/shop_deletion"
 
 [app_proxy]
 url = "https://your-app-url.com/proxy"

@@ -1,0 +1,5 @@
+{
+  "extends": "@remix-run/dev/config/tsconfig.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

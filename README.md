@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/entrolytics/.github/main/media/entrov2.png" alt="Entrolytics" width="64" height="64">
+- <img src="https://raw.githubusercontent.com/entrolytics/.github/main/media/entrov2.png" alt="Entrolytics" width="64" height="64">
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-  [![Shopify](https://img.shields.io/badge/Shopify-App-7AB55C.svg?logo=shopify&logoColor=white)](https://apps.shopify.com/)
-  [![Remix](https://img.shields.io/badge/Remix-2.0-000000.svg?logo=remix)](https://remix.run/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Shopify](https://img.shields.io/badge/Shopify-App-7AB55C.svg?logo=shopify\&logoColor=white)](https://apps.shopify.com/)
+[![Remix](https://img.shields.io/badge/Remix-2.0-000000.svg?logo=remix)](https://remix.run/)
 
 </div>
 
@@ -14,6 +14,7 @@
 **Entrolytics Shopify App** is the official Shopify app for Entrolytics - first-party growth analytics for the edge. Add powerful e-commerce analytics to your Shopify store with one click.
 
 **Why use this app?**
+
 - Automatic add-to-cart and purchase tracking
 - Revenue analytics with conversion rates
 - GDPR compliant, cookie-free tracking
@@ -26,6 +27,7 @@
 <td width="50%">
 
 ### E-commerce Analytics
+
 - Add to cart tracking
 - Purchase and revenue tracking
 - Conversion rate analytics
@@ -35,6 +37,7 @@
 <td width="50%">
 
 ### Privacy & Compliance
+
 - Cookie-free tracking
 - GDPR compliant
 - IP anonymization
@@ -102,17 +105,18 @@ Once enabled, the app automatically tracks:
 
 ## Configuration Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| Website ID | Your Entrolytics website ID | Required |
-| Host URL | Entrolytics host (for self-hosted) | `https://entrolytics.click` |
-| Auto-track | Automatically track page views | `true` |
-| Track e-commerce | Track add-to-cart and purchases | `true` |
-| Respect DNT | Honor Do Not Track setting | `false` |
+| Option           | Description                        | Default                     |
+| ---------------- | ---------------------------------- | --------------------------- |
+| Website ID       | Your Entrolytics website ID        | Required                    |
+| Host URL         | Entrolytics host (for self-hosted) | `https://entrolytics.click` |
+| Auto-track       | Automatically track page views     | `true`                      |
+| Track e-commerce | Track add-to-cart and purchases    | `true`                      |
+| Respect DNT      | Honor Do Not Track setting         | `false`                     |
 
 ## Development
 
 This app is built with:
+
 - [Remix](https://remix.run) - Full-stack web framework
 - [Shopify App Remix](https://github.com/Shopify/shopify-app-js) - Shopify app toolkit
 - [Polaris](https://polaris.shopify.com) - Shopify design system
@@ -121,13 +125,17 @@ This app is built with:
 ### Setup
 
 ```bash
+
 # Install dependencies
+
 pnpm install
 
 # Setup database
+
 pnpm prisma migrate dev
 
 # Start development server
+
 pnpm dev
 ```
 
@@ -140,6 +148,7 @@ cp .env.example .env
 ```
 
 Required variables:
+
 - `SHOPIFY_API_KEY` - Your Shopify app API key
 - `SHOPIFY_API_SECRET` - Your Shopify app API secret
 - `SHOPIFY_APP_URL` - Your app's public URL
@@ -148,7 +157,9 @@ Required variables:
 ### Deploy
 
 ```bash
+
 # Deploy to Shopify
+
 pnpm deploy
 ```
 
@@ -163,6 +174,7 @@ pnpm deploy
 ### Script Tag Injection
 
 The app injects a script tag into the store's theme that:
+
 - Loads the Entrolytics tracking script
 - Configures it with the merchant's Website ID
 - Sets up e-commerce event listeners for add-to-cart and purchase
@@ -173,14 +185,14 @@ The injected script automatically tracks:
 
 ```javascript
 // Add to cart (on button click)
-window.entrolytics.track('add_to_cart');
+window.entrolytics.track("add_to_cart");
 
 // Purchase (on thank you page)
-window.entrolytics.track('purchase', {
+window.entrolytics.track("purchase", {
   revenue: 99.99,
-  currency: 'USD',
-  order_id: '12345',
-  items: 3
+  currency: "USD",
+  order_id: "12345",
+  items: 3,
 });
 ```
 
@@ -194,7 +206,7 @@ window.entrolytics.track('purchase', {
 ## Support
 
 - **Documentation**: [docs.entrolytics.click](https://docs.entrolytics.click)
-- **Email**: hey@entrolytics.click
+- **Email**: <hey@entrolytics.click>
 - **GitHub**: [github.com/entro314-labs](https://github.com/entro314-labs)
 
 ## License
