@@ -17,7 +17,9 @@ import {
   TextField,
 } from "@shopify/polaris";
 import { useState } from "react";
+import { entrolyticsConfigSchema } from "../../lib/entrolytics-config";
 import {
+  deleteShopConfig,
   getShopConfig,
   installScriptTag,
   removeScriptTag,
@@ -32,8 +34,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json({
     shop: session.shop,
     config: config || {
+      clientKey: "",
       websiteId: "",
-      host: "https://entrolytics.click",
+      host: "https://api.entrolytics.click",
       autoTrack: true,
       trackRevenue: true,
       respectDnt: false,
@@ -47,25 +50,38 @@ export async function action({ request }: ActionFunctionArgs) {
   const action = formData.get("action");
 
   if (action === "save") {
-    const config = {
-      websiteId: formData.get("websiteId") as string,
-      host: (formData.get("host") as string) || "https://entrolytics.click",
+    const parsedConfig = entrolyticsConfigSchema.safeParse({
+      websiteId: formData.get("websiteId"),
+      clientKey: formData.get("clientKey"),
+      host: formData.get("host") || "https://api.entrolytics.click",
       autoTrack: formData.get("autoTrack") === "true",
       trackRevenue: formData.get("trackRevenue") === "true",
       respectDnt: formData.get("respectDnt") === "true",
-    };
+    });
 
-    if (!config.websiteId) {
-      return json({ error: "Website ID is required" }, { status: 400 });
+    if (!parsedConfig.success) {
+      return json(
+        { error: parsedConfig.error.issues.at(0)?.message ?? "Invalid configuration" },
+        { status: 400 },
+      );
     }
 
-    await saveShopConfig(session.shop, config);
-
-    // Install script tag
-    const result = await installScriptTag(admin, config);
+    const result = await installScriptTag(admin, session.shop);
 
     if (!result.success) {
       return json({ error: result.error }, { status: 400 });
+    }
+
+    try {
+      await saveShopConfig(session.shop, {
+        ...parsedConfig.data,
+        scriptTagId: result.scriptTagId,
+      });
+    } catch (error) {
+      if (result.created) {
+        await removeScriptTag(admin, session.shop, result.scriptTagId);
+      }
+      throw error;
     }
 
     return json({ success: true, message: "Analytics enabled successfully!" });
@@ -74,7 +90,11 @@ export async function action({ request }: ActionFunctionArgs) {
   if (action === "disable") {
     const config = await getShopConfig(session.shop);
     if (config) {
-      await removeScriptTag(admin, config);
+      const result = await removeScriptTag(admin, session.shop, config.scriptTagId);
+      if (!result.success) {
+        return json({ error: result.error }, { status: 400 });
+      }
+      await deleteShopConfig(session.shop);
     }
 
     return json({ success: true, message: "Analytics disabled" });
@@ -90,7 +110,8 @@ export default function Index() {
   const isLoading = navigation.state === "submitting";
 
   const [websiteId, setWebsiteId] = useState(config.websiteId);
-  const [host, setHost] = useState(config.host ?? "https://entrolytics.click");
+  const [clientKey, setClientKey] = useState(config.clientKey);
+  const [host, setHost] = useState(config.host ?? "https://api.entrolytics.click");
   const [autoTrack, setAutoTrack] = useState(config.autoTrack);
   const [trackRevenue, setTrackRevenue] = useState(config.trackRevenue);
   const [respectDnt, setRespectDnt] = useState(config.respectDnt);
@@ -99,7 +120,8 @@ export default function Index() {
     const formData = new FormData();
     formData.set("action", "save");
     formData.set("websiteId", websiteId);
-    formData.set("host", host || "https://entrolytics.click");
+    formData.set("clientKey", clientKey);
+    formData.set("host", host || "https://api.entrolytics.click");
     formData.set("autoTrack", String(autoTrack));
     formData.set("trackRevenue", String(trackRevenue));
     formData.set("respectDnt", String(respectDnt));
@@ -141,6 +163,15 @@ export default function Index() {
                   </>
                 }
                 placeholder="abc123-def456-ghi789"
+              />
+
+              <TextField
+                label="Client key"
+                value={clientKey}
+                onChange={setClientKey}
+                autoComplete="off"
+                helpText="Use the public client key shown with the website tracking snippet"
+                placeholder="cw_..."
               />
 
               <TextField
@@ -187,7 +218,7 @@ export default function Index() {
                   variant="primary"
                   onClick={handleSave}
                   loading={isLoading}
-                  disabled={!websiteId}
+                  disabled={!websiteId || !clientKey}
                 >
                   {config.websiteId ? "Update Settings" : "Enable Analytics"}
                 </Button>

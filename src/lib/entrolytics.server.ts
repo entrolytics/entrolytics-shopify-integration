@@ -1,237 +1,162 @@
+import { z } from "zod";
+
 import { prisma } from "./db.server";
+import { entrolyticsConfigSchema, type ParsedEntrolyticsConfig } from "./entrolytics-config";
 
-const DEFAULT_HOST = "https://ng.entrolytics.click";
+export type EntrolyticsConfig = ParsedEntrolyticsConfig & {
+  scriptTagId?: string | null;
+};
 
-export interface EntrolyticsConfig {
-	websiteId: string;
-	host?: string;
-	autoTrack?: boolean;
-	trackRevenue?: boolean;
-	respectDnt?: boolean;
-	useEdgeRuntime?: boolean;
+interface AdminGraphql {
+  graphql: (query: string, options?: { variables?: Record<string, unknown> }) => Promise<Response>;
 }
 
-/**
- * Get Entrolytics configuration for a shop
- */
-export async function getShopConfig(
-	shop: string,
-): Promise<EntrolyticsConfig | null> {
-	const config = await prisma.entrolyticsConfig.findUnique({
-		where: { shop },
-	});
+const scriptTagsResultSchema = z.object({
+  data: z.object({
+    scriptTags: z.object({
+      edges: z.array(z.object({ node: z.object({ id: z.string(), src: z.url() }) })),
+    }),
+  }),
+});
 
-	if (!config) return null;
+const scriptTagCreateResultSchema = z.object({
+  data: z.object({
+    scriptTagCreate: z.object({
+      scriptTag: z.object({ id: z.string(), src: z.url() }).nullable(),
+      userErrors: z.array(z.object({ message: z.string() })),
+    }),
+  }),
+});
 
-	return {
-		websiteId: config.websiteId,
-		host: config.host || DEFAULT_HOST,
-		autoTrack: config.autoTrack,
-		trackRevenue: config.trackRevenue,
-		respectDnt: config.respectDnt,
-	};
+const scriptTagDeleteResultSchema = z.object({
+  data: z.object({
+    scriptTagDelete: z.object({
+      userErrors: z.array(z.object({ message: z.string() })),
+    }),
+  }),
+});
+
+export async function getShopConfig(shop: string): Promise<EntrolyticsConfig | null> {
+  const config = await prisma.entrolyticsConfig.findUnique({ where: { shop } });
+  if (!config) return null;
+
+  return {
+    autoTrack: config.autoTrack,
+    clientKey: config.clientKey,
+    host: config.host,
+    respectDnt: config.respectDnt,
+    scriptTagId: config.scriptTagId,
+    trackRevenue: config.trackRevenue,
+    websiteId: config.websiteId,
+  };
 }
 
-/**
- * Save Entrolytics configuration for a shop
- */
 export async function saveShopConfig(
-	shop: string,
-	config: EntrolyticsConfig,
+  shop: string,
+  config: EntrolyticsConfig,
 ): Promise<void> {
-	await prisma.entrolyticsConfig.upsert({
-		where: { shop },
-		update: {
-			websiteId: config.websiteId,
-			host: config.host || DEFAULT_HOST,
-			autoTrack: config.autoTrack ?? true,
-			trackRevenue: config.trackRevenue ?? true,
-			respectDnt: config.respectDnt ?? false,
-			updatedAt: new Date(),
-		},
-		create: {
-			shop,
-			websiteId: config.websiteId,
-			host: config.host || DEFAULT_HOST,
-			autoTrack: config.autoTrack ?? true,
-			trackRevenue: config.trackRevenue ?? true,
-			respectDnt: config.respectDnt ?? false,
-		},
-	});
+  const parsed = entrolyticsConfigSchema.parse(config);
+  await prisma.entrolyticsConfig.upsert({
+    where: { shop },
+    update: {
+      ...parsed,
+      scriptTagId: config.scriptTagId ?? null,
+      updatedAt: new Date(),
+    },
+    create: {
+      shop,
+      ...parsed,
+      scriptTagId: config.scriptTagId ?? null,
+    },
+  });
 }
 
-/**
- * Delete Entrolytics configuration for a shop
- */
 export async function deleteShopConfig(shop: string): Promise<void> {
-	await prisma.entrolyticsConfig
-		.delete({
-			where: { shop },
-		})
-		.catch(() => {
-			// Ignore if doesn't exist
-		});
+  await prisma.entrolyticsConfig.deleteMany({ where: { shop } });
 }
 
-/**
- * Generate the Entrolytics script tag content
- */
-export function generateScriptTag(config: EntrolyticsConfig): string {
-	const host = (config.host || DEFAULT_HOST).replace(/\/$/, "");
-	const useEdgeRuntime = config.useEdgeRuntime ?? true; // Default to edge
-	const scriptPath = useEdgeRuntime ? "/script-edge.js" : "/script.js";
+function getTrackerBootstrapUrl(shop: string): string {
+  const appUrl = process.env.SHOPIFY_APP_URL;
+  if (!appUrl) throw new Error("SHOPIFY_APP_URL is required");
 
-	const attrs = [
-		`src="${host}${scriptPath}"`,
-		`data-website-id="${config.websiteId}"`,
-	];
+  const url = new URL("/tracker.js", appUrl);
+  url.searchParams.set("shop", shop);
+  return url.toString();
+}
 
-	if (!config.autoTrack) {
-		attrs.push('data-auto-track="false"');
-	}
-
-	if (config.respectDnt) {
-		attrs.push('data-do-not-track="true"');
-	}
-
-	// E-commerce tracking script
-	let script = `<script ${attrs.join(" ")} defer></script>`;
-
-	// Add revenue tracking if enabled
-	if (config.trackRevenue) {
-		script += `
-<script>
-(function() {
-  // Wait for Entrolytics to load
-  function waitForEntrolytics(callback) {
-    if (window.entrolytics) {
-      callback();
-    } else {
-      setTimeout(function() { waitForEntrolytics(callback); }, 100);
+async function findEntrolyticsScriptTag(
+  admin: AdminGraphql,
+  shop: string,
+): Promise<{ id: string; src: string } | null> {
+  const response = await admin.graphql(`
+    query EntrolyticsScriptTags {
+      scriptTags(first: 50) {
+        edges { node { id src } }
+      }
     }
+  `);
+  const result = scriptTagsResultSchema.parse(await response.json());
+  const expectedUrl = getTrackerBootstrapUrl(shop);
+  return result.data.scriptTags.edges.find(({ node }) => node.src === expectedUrl)?.node ?? null;
+}
+
+export async function installScriptTag(
+  admin: AdminGraphql,
+  shop: string,
+): Promise<
+  | { success: true; scriptTagId: string; created: boolean }
+  | { success: false; error: string }
+> {
+  const existing = await findEntrolyticsScriptTag(admin, shop);
+  if (existing) return { success: true, scriptTagId: existing.id, created: false };
+
+  const response = await admin.graphql(
+    `
+      mutation EntrolyticsScriptTagCreate($input: ScriptTagInput!) {
+        scriptTagCreate(input: $input) {
+          scriptTag { id src }
+          userErrors { message }
+        }
+      }
+    `,
+    {
+      variables: {
+        input: {
+          cache: true,
+          displayScope: "ONLINE_STORE",
+          src: getTrackerBootstrapUrl(shop),
+        },
+      },
+    },
+  );
+  const result = scriptTagCreateResultSchema.parse(await response.json());
+  const { scriptTag, userErrors } = result.data.scriptTagCreate;
+  if (userErrors.length > 0 || !scriptTag) {
+    return { success: false, error: userErrors.at(0)?.message ?? "Script tag was not created" };
   }
 
-  // Track Shopify events
-  waitForEntrolytics(function() {
-    // Track add to cart
-    document.addEventListener('click', function(e) {
-      var btn = e.target.closest('[name="add"], .add-to-cart, [data-add-to-cart]');
-      if (btn) {
-        window.entrolytics.track('add_to_cart');
-      }
-    });
-
-    // Track checkout (Shopify fires this on thank you page)
-    if (window.Shopify && window.Shopify.checkout) {
-      var checkout = window.Shopify.checkout;
-      window.entrolytics.track('purchase', {
-        revenue: parseFloat(checkout.total_price) / 100,
-        currency: checkout.currency,
-        order_id: checkout.order_id,
-        items: checkout.line_items ? checkout.line_items.length : 0
-      });
-    }
-  });
-})();
-</script>`;
-	}
-
-	return script;
+  return { success: true, scriptTagId: scriptTag.id, created: true };
 }
 
-/**
- * Install script tag via Shopify API
- */
-export async function installScriptTag(
-	admin: { graphql: (query: string) => Promise<Response> },
-	config: EntrolyticsConfig,
-): Promise<{ success: boolean; error?: string }> {
-	const host = (config.host || DEFAULT_HOST).replace(/\/$/, "");
-	const useEdgeRuntime = config.useEdgeRuntime ?? true; // Default to edge
-	const scriptPath = useEdgeRuntime ? "/script-edge.js" : "/script.js";
-	const scriptUrl = `${host}${scriptPath}`;
-
-	const response = await admin.graphql(`
-    mutation scriptTagCreate {
-      scriptTagCreate(input: {
-        src: "${scriptUrl}"
-        displayScope: ALL
-      }) {
-        scriptTag {
-          id
-          src
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `);
-
-	const result = await response.json();
-
-	if (result.data?.scriptTagCreate?.userErrors?.length > 0) {
-		return {
-			success: false,
-			error: result.data.scriptTagCreate.userErrors[0].message,
-		};
-	}
-
-	return { success: true };
-}
-
-/**
- * Remove script tag via Shopify API
- */
 export async function removeScriptTag(
-	admin: { graphql: (query: string) => Promise<Response> },
-	config: EntrolyticsConfig,
+  admin: AdminGraphql,
+  shop: string,
+  scriptTagId?: string | null,
 ): Promise<{ success: boolean; error?: string }> {
-	// First, find the script tag
-	const findResponse = await admin.graphql(`
-    query {
-      scriptTags(first: 50) {
-        edges {
-          node {
-            id
-            src
-          }
+  const id = scriptTagId ?? (await findEntrolyticsScriptTag(admin, shop))?.id;
+  if (!id) return { success: true };
+
+  const response = await admin.graphql(
+    `
+      mutation EntrolyticsScriptTagDelete($id: ID!) {
+        scriptTagDelete(id: $id) {
+          userErrors { message }
         }
       }
-    }
-  `);
-
-	const findResult = await findResponse.json();
-	const scriptTag = findResult.data?.scriptTags?.edges?.find(
-		(edge: { node: { src: string } }) => edge.node.src.includes("entrolytics"),
-	);
-
-	if (!scriptTag) {
-		return { success: true }; // Already removed
-	}
-
-	// Delete the script tag
-	const deleteResponse = await admin.graphql(`
-    mutation scriptTagDelete {
-      scriptTagDelete(id: "${scriptTag.node.id}") {
-        deletedScriptTagId
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `);
-
-	const deleteResult = await deleteResponse.json();
-
-	if (deleteResult.data?.scriptTagDelete?.userErrors?.length > 0) {
-		return {
-			success: false,
-			error: deleteResult.data.scriptTagDelete.userErrors[0].message,
-		};
-	}
-
-	return { success: true };
+    `,
+    { variables: { id } },
+  );
+  const result = scriptTagDeleteResultSchema.parse(await response.json());
+  const error = result.data.scriptTagDelete.userErrors.at(0)?.message;
+  return error ? { success: false, error } : { success: true };
 }

@@ -1,7 +1,7 @@
 import "@shopify/shopify-app-remix/adapters/node";
 import {
-	ApiVersion,
-	AppDistribution,
+  ApiVersion,
+  AppDistribution,
 	type LoginErrorType,
 	shopifyApp,
 } from "@shopify/shopify-app-remix/server";
@@ -11,7 +11,7 @@ import { prisma } from "./db.server";
 const shopify = shopifyApp({
 	apiKey: process.env.SHOPIFY_API_KEY!,
 	apiSecretKey: process.env.SHOPIFY_API_SECRET!,
-	apiVersion: ApiVersion.October24,
+  apiVersion: ApiVersion.July26,
 	scopes: process.env.SCOPES?.split(",") || [
 		"read_themes",
 		"write_themes",
@@ -23,15 +23,15 @@ const shopify = shopifyApp({
 	appUrl: process.env.SHOPIFY_APP_URL!,
 	authPathPrefix: "/auth",
 	sessionStorage: new PrismaSessionStorage(prisma),
-	distribution: AppDistribution.AppStore,
-	future: {
-		unstable_newEmbeddedAuthStrategy: true,
-		wrapRecoveredSessionMutations: true,
-	},
+  distribution: AppDistribution.AppStore,
+  isEmbeddedApp: true,
+  future: {
+    unstable_newEmbeddedAuthStrategy: true,
+  },
 });
 
 export default shopify;
-export const apiVersion = ApiVersion.October24;
+export const apiVersion = ApiVersion.July26;
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 export const authenticate = shopify.authenticate;
 export const unauthenticated = shopify.unauthenticated;

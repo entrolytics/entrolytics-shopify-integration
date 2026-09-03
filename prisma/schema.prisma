@@ -33,6 +33,7 @@ model EntrolyticsConfig {
   id           String   @id @default(cuid())
   shop         String   @unique
   websiteId    String
+  clientKey    String
   host         String   @default("https://entrolytics.click")
   autoTrack    Boolean  @default(true)
   trackRevenue Boolean  @default(true)

@@ -2,7 +2,7 @@
 - <img src="https://raw.githubusercontent.com/entrolytics/.github/main/media/entrov2.png" alt="Entrolytics" width="64" height="64">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Shopify](https://img.shields.io/badge/Shopify-App-7AB55C.svg?logo=shopify\&logoColor=white)](https://apps.shopify.com/)
+[![Shopify](https://img.shields.io/badge/Shopify-App-7AB55C.svg?logo=shopify&logoColor=white)](https://apps.shopify.com/)
 [![Remix](https://img.shields.io/badge/Remix-2.0-000000.svg?logo=remix)](https://remix.run/)
 
 </div>
