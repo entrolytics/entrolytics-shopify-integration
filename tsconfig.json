@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "isolatedDeclarations": true,
     "allowJs": true,
     "esModuleInterop": true,
     "isolatedModules": true,
