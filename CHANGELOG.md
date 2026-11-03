@@ -4,6 +4,11 @@
 
 ### Changed
 
+- `shopify app dev` now has the `shopify.web.toml` it needs: it generates the Prisma client,
+  applies migrations and starts `react-router dev`.
+- The `app_proxy` block is removed from `shopify.app.toml`. It pointed at a `/proxy` route that
+  never existed and nothing used it; the storefront loads `/tracker.js` straight from the app URL
+  through its script tag.
 - The settings screen is built with Polaris web components (Polaris 2, loaded by App Bridge's
   `AppProvider` from Shopify's CDN) instead of Polaris React, which is deprecated and no longer
   maintained. The fields, options, buttons and help panels are the same; the screen follows the

@@ -33,11 +33,6 @@ compliance_topics = ["customers/redact"]
 uri = "/webhooks/shop/redact"
 compliance_topics = ["shop/redact"]
 
-[app_proxy]
-url = "https://your-app-url.com/proxy"
-subpath = "entrolytics"
-prefix = "apps"
-
 [pos]
 embedded = false
 
