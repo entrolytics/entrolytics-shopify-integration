@@ -1,5 +1,6 @@
 import { createHmac } from "node:crypto";
 
+import { RouterContextProvider } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.hoisted(() => {
@@ -45,7 +46,7 @@ function deliver(topic: keyof typeof routes, { secret = "api-secret" } = {}) {
   });
   return routes[topic]
     .action({
-      context: {},
+      context: new RouterContextProvider(),
       params: {},
       pattern: "",
       request,

@@ -1,3 +1,4 @@
+import { RouterContextProvider } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const authenticateAdmin = vi.fn();
@@ -26,11 +27,10 @@ const websiteId = "91800f1f-6a5f-44b9-b063-d5577b51c6aa";
 /** Loader/action arguments the way React Router passes them for `request`. */
 function args(request: Request) {
   return {
-    context: {},
+    context: new RouterContextProvider(),
     params: {},
     pattern: "",
     request,
-    unstable_pattern: "",
     url: new URL(request.url),
   };
 }

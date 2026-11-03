@@ -21,7 +21,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     config: config || {
       clientKey: "",
       websiteId: "",
-      host: "https://api.entrolytics.click",
+      host: "https://api.entrolytics.dev",
       autoTrack: true,
       trackRevenue: true,
       respectDnt: false,
@@ -38,7 +38,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const parsedConfig = entrolyticsConfigSchema.safeParse({
       websiteId: formData.get("websiteId"),
       clientKey: formData.get("clientKey"),
-      host: formData.get("host") || "https://api.entrolytics.click",
+      host: formData.get("host") || "https://api.entrolytics.dev",
       autoTrack: formData.get("autoTrack") === "true",
       trackRevenue: formData.get("trackRevenue") === "true",
       respectDnt: formData.get("respectDnt") === "true",
@@ -96,7 +96,7 @@ export default function Index() {
 
   const [websiteId, setWebsiteId] = useState(config.websiteId);
   const [clientKey, setClientKey] = useState(config.clientKey);
-  const [host, setHost] = useState(config.host ?? "https://api.entrolytics.click");
+  const [host, setHost] = useState(config.host ?? "https://api.entrolytics.dev");
   const [autoTrack, setAutoTrack] = useState(config.autoTrack);
   const [trackRevenue, setTrackRevenue] = useState(config.trackRevenue);
   const [respectDnt, setRespectDnt] = useState(config.respectDnt);
@@ -106,7 +106,7 @@ export default function Index() {
     formData.set("action", "save");
     formData.set("websiteId", websiteId);
     formData.set("clientKey", clientKey);
-    formData.set("host", host || "https://api.entrolytics.click");
+    formData.set("host", host || "https://api.entrolytics.dev");
     formData.set("autoTrack", String(autoTrack));
     formData.set("trackRevenue", String(trackRevenue));
     formData.set("respectDnt", String(respectDnt));
@@ -138,7 +138,7 @@ export default function Index() {
           >
             <s-text slot="details">
               Get your Website ID from your{" "}
-              <s-link href="https://entrolytics.click" target="_blank">
+              <s-link href="https://entrolytics.dev" target="_blank">
                 Entrolytics dashboard
               </s-link>
             </s-text>
@@ -218,8 +218,8 @@ export default function Index() {
         <s-stack gap="small-200">
           <s-paragraph>
             <s-text type="strong">1.</s-text> Create an account at{" "}
-            <s-link href="https://entrolytics.click" target="_blank">
-              entrolytics.click
+            <s-link href="https://entrolytics.dev" target="_blank">
+              entrolytics.dev
             </s-link>
           </s-paragraph>
           <s-paragraph>

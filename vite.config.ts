@@ -38,6 +38,8 @@ export default defineConfig({
       allow: ["src/app", "node_modules"],
     },
   },
-  plugins: [reactRouter()],
+  // @react-router/dev 8 applies its serve-mode resolve conditions and JSX settings under Vitest,
+  // which leaves `react/jsx-dev-runtime` without `jsxDEV`; the test run needs only Vite's JSX.
+  plugins: process.env.VITEST ? [] : [reactRouter()],
   resolve: { tsconfigPaths: true },
 });

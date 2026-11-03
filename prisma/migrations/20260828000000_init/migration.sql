@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS "EntrolyticsConfig" (
   "shop" TEXT NOT NULL UNIQUE,
   "websiteId" TEXT NOT NULL,
   "clientKey" TEXT NOT NULL,
-  "host" TEXT NOT NULL DEFAULT 'https://api.entrolytics.click',
+  "host" TEXT NOT NULL DEFAULT 'https://api.entrolytics.dev',
   "autoTrack" BOOLEAN NOT NULL DEFAULT true,
   "trackRevenue" BOOLEAN NOT NULL DEFAULT true,
   "respectDnt" BOOLEAN NOT NULL DEFAULT false,
@@ -38,4 +38,4 @@ ALTER TABLE "EntrolyticsConfig" ADD COLUMN IF NOT EXISTS "clientKey" TEXT;
 DELETE FROM "EntrolyticsConfig" WHERE "clientKey" IS NULL;
 ALTER TABLE "EntrolyticsConfig" ALTER COLUMN "clientKey" SET NOT NULL;
 ALTER TABLE "EntrolyticsConfig"
-  ALTER COLUMN "host" SET DEFAULT 'https://api.entrolytics.click';
+  ALTER COLUMN "host" SET DEFAULT 'https://api.entrolytics.dev';

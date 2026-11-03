@@ -105,13 +105,13 @@ Once enabled, the app automatically tracks:
 
 ## Configuration Options
 
-| Option           | Description                        | Default                     |
-| ---------------- | ---------------------------------- | --------------------------- |
-| Website ID       | Your Entrolytics website ID        | Required                    |
-| Host URL         | Entrolytics host (for self-hosted) | `https://entrolytics.click` |
-| Auto-track       | Automatically track page views     | `true`                      |
-| Track e-commerce | Track add-to-cart and purchases    | `true`                      |
-| Respect DNT      | Honor Do Not Track setting         | `false`                     |
+| Option           | Description                        | Default                   |
+| ---------------- | ---------------------------------- | ------------------------- |
+| Website ID       | Your Entrolytics website ID        | Required                  |
+| Host URL         | Entrolytics host (for self-hosted) | `https://entrolytics.dev` |
+| Auto-track       | Automatically track page views     | `true`                    |
+| Track e-commerce | Track add-to-cart and purchases    | `true`                    |
+| Respect DNT      | Honor Do Not Track setting         | `false`                   |
 
 ## Development
 
@@ -169,7 +169,7 @@ pnpm deploy
 2. **Configuration**: Merchant enters their Entrolytics Website ID
 3. **Script Injection**: App uses Shopify's Script Tag API to inject tracking
 4. **Data Collection**: Entrolytics script collects analytics data
-5. **Dashboard**: Merchant views analytics at entrolytics.click
+5. **Dashboard**: Merchant views analytics at entrolytics.dev
 
 ### Script Tag Injection
 
@@ -205,8 +205,8 @@ window.entrolytics.track("purchase", {
 
 ## Support
 
-- **Documentation**: [docs.entrolytics.click](https://docs.entrolytics.click)
-- **Email**: <hey@entrolytics.click>
+- **Documentation**: [docs.entrolytics.dev](https://docs.entrolytics.dev)
+- **Email**: <hey@entrolytics.dev>
 - **GitHub**: [github.com/entro314-labs](https://github.com/entro314-labs)
 
 ## License
