@@ -51,10 +51,7 @@ export async function getShopConfig(shop: string): Promise<EntrolyticsConfig | n
   };
 }
 
-export async function saveShopConfig(
-  shop: string,
-  config: EntrolyticsConfig,
-): Promise<void> {
+export async function saveShopConfig(shop: string, config: EntrolyticsConfig): Promise<void> {
   const parsed = entrolyticsConfigSchema.parse(config);
   await prisma.entrolyticsConfig.upsert({
     where: { shop },
@@ -104,8 +101,7 @@ export async function installScriptTag(
   admin: AdminGraphql,
   shop: string,
 ): Promise<
-  | { success: true; scriptTagId: string; created: boolean }
-  | { success: false; error: string }
+  { success: true; scriptTagId: string; created: boolean } | { success: false; error: string }
 > {
   const existing = await findEntrolyticsScriptTag(admin, shop);
   if (existing) return { success: true, scriptTagId: existing.id, created: false };

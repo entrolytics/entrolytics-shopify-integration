@@ -19,6 +19,10 @@
 
 ### Fixed
 
+- `src/lib/entrolytics-config.ts`, which the settings route and the config store import, was never
+  committed: the `.gitignore` rule `lib/` meant for a build output also matched `src/lib/`, so a fresh
+  clone failed to build. The rule now only ignores a top-level `lib/`, and the file and its test are
+  in the repository.
 - `@prisma/client` 7.10 was paired with the `prisma` 8 release-candidate CLI, which has no
   `generate` command, so the client was never generated: `PrismaClient` did not exist and the app
   could neither typecheck nor start. Both are now `6.19.3`, the newest release that

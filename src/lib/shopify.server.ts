@@ -2,27 +2,27 @@ import "@shopify/shopify-app-react-router/adapters/node";
 import {
   ApiVersion,
   AppDistribution,
-	type LoginErrorType,
-	shopifyApp,
+  type LoginErrorType,
+  shopifyApp,
 } from "@shopify/shopify-app-react-router/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { prisma } from "./db.server";
 
 const shopify = shopifyApp({
-	apiKey: process.env.SHOPIFY_API_KEY!,
-	apiSecretKey: process.env.SHOPIFY_API_SECRET!,
+  apiKey: process.env.SHOPIFY_API_KEY!,
+  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
   apiVersion: ApiVersion.July26,
-	scopes: process.env.SCOPES?.split(",") || [
-		"read_themes",
-		"write_themes",
-		"read_script_tags",
-		"write_script_tags",
-		"read_orders",
-		"read_products",
-	],
-	appUrl: process.env.SHOPIFY_APP_URL!,
-	authPathPrefix: "/auth",
-	sessionStorage: new PrismaSessionStorage(prisma),
+  scopes: process.env.SCOPES?.split(",") || [
+    "read_themes",
+    "write_themes",
+    "read_script_tags",
+    "write_script_tags",
+    "read_orders",
+    "read_products",
+  ],
+  appUrl: process.env.SHOPIFY_APP_URL!,
+  authPathPrefix: "/auth",
+  sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
 });
 
