@@ -3,7 +3,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Shopify](https://img.shields.io/badge/Shopify-App-7AB55C.svg?logo=shopify&logoColor=white)](https://apps.shopify.com/)
-[![Remix](https://img.shields.io/badge/Remix-2.0-000000.svg?logo=remix)](https://remix.run/)
+[![React Router](https://img.shields.io/badge/React_Router-7-CA4245.svg?logo=reactrouter)](https://reactrouter.com/)
 
 </div>
 
@@ -117,8 +117,8 @@ Once enabled, the app automatically tracks:
 
 This app is built with:
 
-- [Remix](https://remix.run) - Full-stack web framework
-- [Shopify App Remix](https://github.com/Shopify/shopify-app-js) - Shopify app toolkit
+- [React Router](https://reactrouter.com) - Full-stack web framework
+- [Shopify App React Router](https://github.com/Shopify/shopify-app-js) - Shopify app toolkit
 - [Polaris](https://polaris.shopify.com) - Shopify design system
 - [Prisma](https://prisma.io) - Database ORM
 

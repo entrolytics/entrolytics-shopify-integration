@@ -1,6 +1,5 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { useLoaderData, useNavigation, useSubmit } from "@remix-run/react";
+import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
+import { data, useLoaderData, useNavigation, useSubmit } from "react-router";
 import {
   Banner,
   BlockStack,
@@ -16,6 +15,7 @@ import {
   Text,
   TextField,
 } from "@shopify/polaris";
+import { boundary } from "@shopify/shopify-app-react-router/server";
 import { useState } from "react";
 import { entrolyticsConfigSchema } from "../../lib/entrolytics-config";
 import {
@@ -31,7 +31,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { session } = await authenticate.admin(request);
   const config = await getShopConfig(session.shop);
 
-  return json({
+  return {
     shop: session.shop,
     config: config || {
       clientKey: "",
@@ -41,7 +41,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       trackRevenue: true,
       respectDnt: false,
     },
-  });
+  };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -60,7 +60,7 @@ export async function action({ request }: ActionFunctionArgs) {
     });
 
     if (!parsedConfig.success) {
-      return json(
+      return data(
         { error: parsedConfig.error.issues.at(0)?.message ?? "Invalid configuration" },
         { status: 400 },
       );
@@ -69,7 +69,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const result = await installScriptTag(admin, session.shop);
 
     if (!result.success) {
-      return json({ error: result.error }, { status: 400 });
+      return data({ error: result.error }, { status: 400 });
     }
 
     try {
@@ -84,7 +84,7 @@ export async function action({ request }: ActionFunctionArgs) {
       throw error;
     }
 
-    return json({ success: true, message: "Analytics enabled successfully!" });
+    return { success: true, message: "Analytics enabled successfully!" };
   }
 
   if (action === "disable") {
@@ -92,15 +92,15 @@ export async function action({ request }: ActionFunctionArgs) {
     if (config) {
       const result = await removeScriptTag(admin, session.shop, config.scriptTagId);
       if (!result.success) {
-        return json({ error: result.error }, { status: 400 });
+        return data({ error: result.error }, { status: 400 });
       }
       await deleteShopConfig(session.shop);
     }
 
-    return json({ success: true, message: "Analytics disabled" });
+    return { success: true, message: "Analytics disabled" };
   }
 
-  return json({ error: "Unknown action" }, { status: 400 });
+  return data({ error: "Unknown action" }, { status: 400 });
 }
 
 export default function Index() {
@@ -307,3 +307,5 @@ export default function Index() {
     </Page>
   );
 }
+
+export const headers: HeadersFunction = (headersArgs) => boundary.headers(headersArgs);

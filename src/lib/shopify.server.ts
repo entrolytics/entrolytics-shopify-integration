@@ -1,10 +1,10 @@
-import "@shopify/shopify-app-remix/adapters/node";
+import "@shopify/shopify-app-react-router/adapters/node";
 import {
   ApiVersion,
   AppDistribution,
 	type LoginErrorType,
 	shopifyApp,
-} from "@shopify/shopify-app-remix/server";
+} from "@shopify/shopify-app-react-router/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { prisma } from "./db.server";
 
@@ -24,10 +24,6 @@ const shopify = shopifyApp({
 	authPathPrefix: "/auth",
 	sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
-  isEmbeddedApp: true,
-  future: {
-    unstable_newEmbeddedAuthStrategy: true,
-  },
 });
 
 export default shopify;

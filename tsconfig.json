@@ -9,11 +9,12 @@
     "moduleResolution": "Bundler",
     "noEmit": true,
     "resolveJsonModule": true,
+    "rootDirs": [".", "./.react-router/types"],
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
-    "types": ["@remix-run/node", "vite/client"]
+    "types": ["@react-router/node", "node", "vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", ".react-router/types/**/*"],
   "exclude": ["node_modules"]
 }
