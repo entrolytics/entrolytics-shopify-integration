@@ -1,7 +1,5 @@
 import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData, useRouteError } from "react-router";
-import { AppProvider as PolarisAppProvider } from "@shopify/polaris";
-import polarisTranslations from "@shopify/polaris/locales/en.json" with { type: "json" };
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 
@@ -18,9 +16,7 @@ export default function AppLayout() {
   const { apiKey } = useLoaderData<typeof loader>();
   return (
     <AppProvider apiKey={apiKey}>
-      <PolarisAppProvider i18n={polarisTranslations}>
-        <Outlet />
-      </PolarisAppProvider>
+      <Outlet />
     </AppProvider>
   );
 }

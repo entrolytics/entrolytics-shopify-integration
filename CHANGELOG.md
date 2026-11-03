@@ -4,6 +4,10 @@
 
 ### Changed
 
+- The settings screen is built with Polaris web components (Polaris 2, loaded by App Bridge's
+  `AppProvider` from Shopify's CDN) instead of Polaris React, which is deprecated and no longer
+  maintained. The fields, options, buttons and help panels are the same; the screen follows the
+  admin's current design.
 - The app now runs on React Router 7 and `@shopify/shopify-app-react-router` 4 instead of Remix 2
   and `@shopify/shopify-app-remix`, which Shopify supports for critical security fixes only. Build
   with `react-router build`; `typecheck` now runs `react-router typegen` first. Embedded auth uses

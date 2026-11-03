@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
-    "types": ["@react-router/node", "node", "vite/client"]
+    "types": ["@react-router/node", "@shopify/polaris-types", "node", "vite/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", ".react-router/types/**/*"],
   "exclude": ["node_modules"]

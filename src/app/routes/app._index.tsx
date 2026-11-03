@@ -1,20 +1,5 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { data, useLoaderData, useNavigation, useSubmit } from "react-router";
-import {
-  Banner,
-  BlockStack,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Divider,
-  InlineStack,
-  Layout,
-  Link,
-  Page,
-  Text,
-  TextField,
-} from "@shopify/polaris";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { useState } from "react";
 import { entrolyticsConfigSchema } from "../../lib/entrolytics-config";
@@ -135,176 +120,140 @@ export default function Index() {
   };
 
   return (
-    <Page title="Entrolytics Analytics">
-      <Layout>
-        <Layout.Section>
-          <Card>
-            <BlockStack gap="400">
-              <Text as="h2" variant="headingMd">
-                Connect Your Store to Entrolytics
-              </Text>
-              <Text as="p" variant="bodyMd" tone="subdued">
-                Track visitors, conversions, and revenue with privacy-focused analytics.
-              </Text>
+    <s-page heading="Entrolytics Analytics">
+      <s-section heading="Connect Your Store to Entrolytics">
+        <s-stack gap="base">
+          <s-paragraph color="subdued">
+            Track visitors, conversions, and revenue with privacy-focused analytics.
+          </s-paragraph>
 
-              <Divider />
+          <s-divider />
 
-              <TextField
-                label="Website ID"
-                value={websiteId}
-                onChange={setWebsiteId}
-                autoComplete="off"
-                helpText={
-                  <>
-                    Get your Website ID from your{" "}
-                    <Link url="https://entrolytics.click" target="_blank">
-                      Entrolytics dashboard
-                    </Link>
-                  </>
-                }
-                placeholder="abc123-def456-ghi789"
-              />
+          <s-text-field
+            label="Website ID"
+            value={websiteId}
+            onInput={(event) => setWebsiteId(event.currentTarget.value)}
+            autocomplete="off"
+            placeholder="abc123-def456-ghi789"
+          >
+            <s-text slot="details">
+              Get your Website ID from your{" "}
+              <s-link href="https://entrolytics.click" target="_blank">
+                Entrolytics dashboard
+              </s-link>
+            </s-text>
+          </s-text-field>
 
-              <TextField
-                label="Client key"
-                value={clientKey}
-                onChange={setClientKey}
-                autoComplete="off"
-                helpText="Use the public client key shown with the website tracking snippet"
-                placeholder="cw_..."
-              />
+          <s-text-field
+            label="Client key"
+            value={clientKey}
+            onInput={(event) => setClientKey(event.currentTarget.value)}
+            autocomplete="off"
+            details="Use the public client key shown with the website tracking snippet"
+            placeholder="cw_..."
+          />
 
-              <TextField
-                label="Host URL"
-                value={host}
-                onChange={setHost}
-                autoComplete="off"
-                helpText="Leave default unless self-hosting Entrolytics"
-              />
+          <s-text-field
+            label="Host URL"
+            value={host}
+            onInput={(event) => setHost(event.currentTarget.value)}
+            autocomplete="off"
+            details="Leave default unless self-hosting Entrolytics"
+          />
 
-              <Divider />
+          <s-divider />
 
-              <Text as="h3" variant="headingMd">
-                Tracking Options
-              </Text>
+          <s-heading>Tracking Options</s-heading>
 
-              <BlockStack gap="200">
-                <Checkbox
-                  label="Auto-track page views"
-                  checked={autoTrack}
-                  onChange={setAutoTrack}
-                  helpText="Automatically track when visitors view pages"
-                />
+          <s-stack gap="small-200">
+            <s-checkbox
+              label="Auto-track page views"
+              checked={autoTrack}
+              onChange={(event) => setAutoTrack(event.currentTarget.checked)}
+              details="Automatically track when visitors view pages"
+            />
 
-                <Checkbox
-                  label="Track e-commerce events"
-                  checked={trackRevenue}
-                  onChange={setTrackRevenue}
-                  helpText="Track add-to-cart and purchase events with revenue data"
-                />
+            <s-checkbox
+              label="Track e-commerce events"
+              checked={trackRevenue}
+              onChange={(event) => setTrackRevenue(event.currentTarget.checked)}
+              details="Track add-to-cart and purchase events with revenue data"
+            />
 
-                <Checkbox
-                  label="Respect Do Not Track"
-                  checked={respectDnt}
-                  onChange={setRespectDnt}
-                  helpText="Honor browser's Do Not Track setting"
-                />
-              </BlockStack>
+            <s-checkbox
+              label="Respect Do Not Track"
+              checked={respectDnt}
+              onChange={(event) => setRespectDnt(event.currentTarget.checked)}
+              details="Honor browser's Do Not Track setting"
+            />
+          </s-stack>
 
-              <Divider />
+          <s-divider />
 
-              <InlineStack gap="300">
-                <Button
-                  variant="primary"
-                  onClick={handleSave}
-                  loading={isLoading}
-                  disabled={!websiteId || !clientKey}
-                >
-                  {config.websiteId ? "Update Settings" : "Enable Analytics"}
-                </Button>
+          <s-stack direction="inline" gap="small-100">
+            <s-button
+              variant="primary"
+              onClick={handleSave}
+              loading={isLoading}
+              disabled={!websiteId || !clientKey}
+            >
+              {config.websiteId ? "Update Settings" : "Enable Analytics"}
+            </s-button>
 
-                {config.websiteId && (
-                  <Button
-                    variant="plain"
-                    tone="critical"
-                    onClick={handleDisable}
-                    loading={isLoading}
-                  >
-                    Disable Analytics
-                  </Button>
-                )}
-              </InlineStack>
-            </BlockStack>
-          </Card>
-        </Layout.Section>
+            {config.websiteId && (
+              <s-button
+                variant="tertiary"
+                tone="critical"
+                onClick={handleDisable}
+                loading={isLoading}
+              >
+                Disable Analytics
+              </s-button>
+            )}
+          </s-stack>
+        </s-stack>
+      </s-section>
 
-        <Layout.Section variant="oneThird">
-          <Card>
-            <BlockStack gap="300">
-              <Text as="h2" variant="headingMd">
-                Getting Started
-              </Text>
+      <s-section slot="aside" heading="Getting Started">
+        <s-stack gap="small-200">
+          <s-paragraph>
+            <s-text type="strong">1.</s-text> Create an account at{" "}
+            <s-link href="https://entrolytics.click" target="_blank">
+              entrolytics.click
+            </s-link>
+          </s-paragraph>
+          <s-paragraph>
+            <s-text type="strong">2.</s-text> Add your store as a website
+          </s-paragraph>
+          <s-paragraph>
+            <s-text type="strong">3.</s-text> Copy your Website ID
+          </s-paragraph>
+          <s-paragraph>
+            <s-text type="strong">4.</s-text> Paste it here and enable
+          </s-paragraph>
+        </s-stack>
+      </s-section>
 
-              <BlockStack gap="200">
-                <Text as="p" variant="bodyMd">
-                  <strong>1.</strong> Create an account at{" "}
-                  <Link url="https://entrolytics.click" target="_blank">
-                    entrolytics.click
-                  </Link>
-                </Text>
-                <Text as="p" variant="bodyMd">
-                  <strong>2.</strong> Add your store as a website
-                </Text>
-                <Text as="p" variant="bodyMd">
-                  <strong>3.</strong> Copy your Website ID
-                </Text>
-                <Text as="p" variant="bodyMd">
-                  <strong>4.</strong> Paste it here and enable
-                </Text>
-              </BlockStack>
-            </BlockStack>
-          </Card>
+      <s-section slot="aside" heading="What We Track">
+        <s-stack gap="base">
+          <s-stack gap="small-300">
+            <s-paragraph>✓ Page views</s-paragraph>
+            <s-paragraph>✓ Visitor sessions</s-paragraph>
+            <s-paragraph>✓ Add to cart events</s-paragraph>
+            <s-paragraph>✓ Purchases & revenue</s-paragraph>
+            <s-paragraph>✓ Traffic sources</s-paragraph>
+            <s-paragraph>✓ Device & location data</s-paragraph>
+          </s-stack>
 
-          <Box paddingBlockStart="400">
-            <Card>
-              <BlockStack gap="300">
-                <Text as="h2" variant="headingMd">
-                  What We Track
-                </Text>
-
-                <BlockStack gap="100">
-                  <Text as="p" variant="bodyMd">
-                    ✓ Page views
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    ✓ Visitor sessions
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    ✓ Add to cart events
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    ✓ Purchases & revenue
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    ✓ Traffic sources
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    ✓ Device & location data
-                  </Text>
-                </BlockStack>
-
-                <Banner tone="info">
-                  <Text as="p" variant="bodyMd">
-                    We're privacy-focused: no cookies required, GDPR compliant, and all data is
-                    anonymized.
-                  </Text>
-                </Banner>
-              </BlockStack>
-            </Card>
-          </Box>
-        </Layout.Section>
-      </Layout>
-    </Page>
+          <s-banner tone="info">
+            <s-paragraph>
+              We're privacy-focused: no cookies required, GDPR compliant, and all data is
+              anonymized.
+            </s-paragraph>
+          </s-banner>
+        </s-stack>
+      </s-section>
+    </s-page>
   );
 }
 

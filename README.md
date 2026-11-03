@@ -119,7 +119,7 @@ This app is built with:
 
 - [React Router](https://reactrouter.com) - Full-stack web framework
 - [Shopify App React Router](https://github.com/Shopify/shopify-app-js) - Shopify app toolkit
-- [Polaris](https://polaris.shopify.com) - Shopify design system
+- [Polaris web components](https://shopify.dev/docs/api/polaris) - Shopify admin UI
 - [Prisma](https://prisma.io) - Database ORM
 
 ### Setup
