@@ -16,12 +16,22 @@ redirect_urls = [
 ]
 
 [webhooks]
-api_version = "2024-10"
+# Keep in step with apiVersion in src/lib/shopify.server.ts
+api_version = "2026-07"
 
-[webhooks.privacy_compliance]
-customer_deletion_url = "/webhooks/customer_deletion"
-customer_data_request_url = "/webhooks/customer_data_request"
-shop_deletion_url = "/webhooks/shop_deletion"
+# Mandatory compliance topics, handled by src/app/routes/webhooks.*.ts
+# See: https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance
+[[webhooks.subscriptions]]
+uri = "/webhooks/customers/data_request"
+compliance_topics = ["customers/data_request"]
+
+[[webhooks.subscriptions]]
+uri = "/webhooks/customers/redact"
+compliance_topics = ["customers/redact"]
+
+[[webhooks.subscriptions]]
+uri = "/webhooks/shop/redact"
+compliance_topics = ["shop/redact"]
 
 [app_proxy]
 url = "https://your-app-url.com/proxy"

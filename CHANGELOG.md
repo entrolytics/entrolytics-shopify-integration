@@ -19,6 +19,12 @@
 
 ### Fixed
 
+- The mandatory compliance webhooks pointed at routes that did not exist. `shop/redact` now
+  deletes the shop's sessions and settings; `customers/data_request` and `customers/redact` are
+  acknowledged, because the app stores no customer data. All three verify Shopify's HMAC and reject
+  invalid deliveries with 401. They are subscribed through `compliance_topics` in
+  `shopify.app.toml`, and the webhook API version is now `2026-07`, the version the app's API
+  client uses (it was `2024-10`).
 - Document responses now carry Shopify's `Content-Security-Policy: frame-ancestors` header, which
   lets only the shop's own admin embed the app, plus the App Bridge and Polaris preload links. The
   app had no `entry.server`, so `addDocumentResponseHeaders` was never called.
