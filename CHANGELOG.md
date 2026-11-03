@@ -19,6 +19,10 @@
 
 ### Fixed
 
+- Shops could not authenticate: the session storage writes `refreshToken` and
+  `refreshTokenExpires` on every save, the `Session` table had neither column, and every save failed
+  with "Unknown argument `refreshToken`". Migration `20261103000000_session_refresh_token` adds both
+  as nullable columns; run `prisma migrate deploy` when deploying.
 - `src/lib/entrolytics-config.ts`, which the settings route and the config store import, was never
   committed: the `.gitignore` rule `lib/` meant for a build output also matched `src/lib/`, so a fresh
   clone failed to build. The rule now only ignores a top-level `lib/`, and the file and its test are
