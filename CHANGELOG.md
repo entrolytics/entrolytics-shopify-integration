@@ -16,3 +16,11 @@
 - Every route that calls `authenticate.admin` now exports `headers`, and the `/app` layout exports
   an `ErrorBoundary`, so the reauthorization and redirect headers Shopify sets on thrown responses
   reach the browser instead of being dropped.
+
+### Fixed
+
+- `@prisma/client` 7.10 was paired with the `prisma` 8 release-candidate CLI, which has no
+  `generate` command, so the client was never generated: `PrismaClient` did not exist and the app
+  could neither typecheck nor start. Both are now `6.19.3`, the newest release that
+  `@shopify/shopify-app-session-storage-prisma` 11 (the latest) supports; it requires
+  `prisma`/`@prisma/client` `^6.19.0`, and no published version supports Prisma 7 or 8.

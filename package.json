@@ -27,7 +27,7 @@
     "generate": "shopify app generate"
   },
   "dependencies": {
-    "@prisma/client": "^7.10.0",
+    "@prisma/client": "^6.19.3",
     "@react-router/fs-routes": "^7.18.5",
     "@react-router/node": "^7.18.5",
     "@shopify/app-bridge-react": "^4.2.13",
@@ -48,7 +48,7 @@
     "@types/react-dom": "^19.2.7",
     "oxfmt": "^0.67.0",
     "oxlint": "^1.82.0",
-    "prisma": "^8.0.0-rc.13",
+    "prisma": "^6.19.3",
     "typescript": "next",
     "vite": "^8.2.2",
     "vitest": "^5.0.0"
