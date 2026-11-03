@@ -19,6 +19,9 @@
 
 ### Fixed
 
+- Document responses now carry Shopify's `Content-Security-Policy: frame-ancestors` header, which
+  lets only the shop's own admin embed the app, plus the App Bridge and Polaris preload links. The
+  app had no `entry.server`, so `addDocumentResponseHeaders` was never called.
 - Shops could not authenticate: the session storage writes `refreshToken` and
   `refreshTokenExpires` on every save, the `Session` table had neither column, and every save failed
   with "Unknown argument `refreshToken`". Migration `20261103000000_session_refresh_token` adds both
