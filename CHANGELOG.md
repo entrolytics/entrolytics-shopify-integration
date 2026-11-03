@@ -6,6 +6,10 @@
 
 - `shopify app dev` now has the `shopify.web.toml` it needs: it generates the Prisma client,
   applies migrations and starts `react-router dev`.
+- The Vite dev server takes its settings from Shopify's React Router template: it listens on the
+  CLI's `PORT` (default 3000) instead of 5173, accepts requests for the tunnel host from
+  `SHOPIFY_APP_URL` (or the CLI's `HOST`) instead of answering "Blocked request", and points HMR at
+  the tunnel over `wss` on port 443.
 - The `app_proxy` block is removed from `shopify.app.toml`. It pointed at a `/proxy` route that
   never existed and nothing used it; the storefront loads `/tracker.js` straight from the app URL
   through its script tag.
