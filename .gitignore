@@ -9,6 +9,7 @@ build/
 /lib/
 *.tsbuildinfo
 .react-router/
+/src/generated/
 
 # Testing
 coverage/

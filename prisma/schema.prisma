@@ -1,13 +1,14 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
+// The connection URL lives in prisma.config.ts; the app connects through @prisma/adapter-pg.
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-// Shopify session storage (required by @shopify/shopify-app-session-storage-prisma)
+// Shopify sessions, read and written by src/lib/session-storage.server.ts
 model Session {
   id                  String    @id
   shop                String
